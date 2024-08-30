@@ -13,10 +13,10 @@ treasury_note <- read_csv("https://fred.stlouisfed.org/graph/fredgraph.csv?bgcol
 treasury_note %>% 
   mutate(tn_10y = as.numeric(tn_10y, na.rm = TRUE))
 
-problematic_rows <- treasury_note %>% 
+#problematic_rows <- treasury_note %>% 
   filter(is.na(as.numeric(tn_10y)))
 
-print(problematic_rows)
+#print(problematic_rows)
 
 treasury_note <- treasury_note %>% 
   filter(!is.na(tn_10y)) %>% 
