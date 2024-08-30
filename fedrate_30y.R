@@ -1,4 +1,4 @@
-
+## US Federal Rate, 10-year TN and 30-year mortgage rates
 library(tidyverse)
 library(lubridate)
 library(ggtext)
@@ -10,11 +10,11 @@ treasury_note <- read_csv("https://fred.stlouisfed.org/graph/fredgraph.csv?bgcol
   rename_all(tolower) %>% 
   rename(tn_10y = dgs10) 
 
-treasury_note %>% 
-  mutate(tn_10y = as.numeric(tn_10y, na.rm = TRUE))
+# treasury_note %>% 
+#   mutate(tn_10y = as.numeric(tn_10y, na.rm = TRUE))
 
 #problematic_rows <- treasury_note %>% 
-  filter(is.na(as.numeric(tn_10y)))
+# filter(is.na(as.numeric(tn_10y)))
 
 #print(problematic_rows)
 
