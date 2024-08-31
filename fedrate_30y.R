@@ -54,7 +54,7 @@ tail(merged_data)
 ## filtering_date:
   
 filtered_data <- merged_data %>%   
-  filter(month >= "2023-01-01" & month < "2024-09-01") 
+  filter(month >= "1998-01-01" & month < "1999-09-01") 
 
 head(filtered_data, 10)
 
@@ -75,11 +75,11 @@ ggplot(long_data, aes(x = month, y = percentage, color = rates)) +
         plot.title = element_textbox_simple()
   ) 
 
+ggsave("correlation_fedfund_treasury_mortgage.png")
+
 max(filtered_data$mortgage30us)
 filtered_data %>% 
   filter(mortgage30us == max(mortgage30us, na.rm = TRUE))
-
-ggsave("correlation_fedfund_treasury_mortgage.png")
 
 ggplot(merged_data, aes(x = fedfunds, y = mortgage30us)) +
   geom_point() +
