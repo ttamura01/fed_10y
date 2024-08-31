@@ -41,17 +41,26 @@ mortgage_data <- mortgage %>%
 
 merged_data <- mortgage_data %>% 
   inner_join(fedfunds_data, by = c("month" = "date")) %>% 
-  inner_join(., treasury_note_data, by = "month") %>% 
-  filter(month >= "1971-01-01" & month < "2025-01-01") 
+  inner_join(., treasury_note_data, by = "month")
 
 updates <- tribble(~ month, ~mortgage30us, ~fedfunds, ~tn_10y,
                    "2024-08-01", 6.35, 5.33, 3.87)
 
 merged_data <- rbind(merged_data, updates)
 
+head(merged_data)
 tail(merged_data)
 
-long_data <- merged_data %>% 
+## filtering_date:
+  
+filtered_data <- merged_data %>%   
+  filter(month >= "2023-01-01" & month < "2024-09-01") 
+
+head(filtered_data, 10)
+
+tail(filtered_data, 10)
+
+long_data <- filtered_data %>% 
   pivot_longer(cols = -month, names_to = "rates", values_to = "percentage")
 
 ggplot(long_data, aes(x = month, y = percentage, color = rates)) +
@@ -65,6 +74,10 @@ ggplot(long_data, aes(x = month, y = percentage, color = rates)) +
         plot.title.position = "plot",
         plot.title = element_textbox_simple()
   ) 
+
+max(filtered_data$mortgage30us)
+filtered_data %>% 
+  filter(mortgage30us == max(mortgage30us, na.rm = TRUE))
 
 ggsave("correlation_fedfund_treasury_mortgage.png")
 
@@ -124,3 +137,20 @@ ggplot(merged_data, aes(x = tn_10y, y = mortgage30us)) +
   ) 
 
 ggsave("correlation_10y_mortgage.png")
+
+## some additional codes
+mortgage %>% 
+  mutate(date = ymd(date)) %>% 
+  group_by(month = floor_date(date, "month")) %>% 
+  filter(month == "2023-10-01") 
+
+treasury_note %>% 
+  mutate(date = ymd(date)) %>% 
+  group_by(month = floor_date(date, "month")) %>% 
+  filter(month == "2023-10-01")
+
+treasury_note %>% 
+  mutate(date = ymd(date)) %>% 
+  group_by(month = floor_date(date, "month")) %>% 
+  filter(month == "2023-10-01") %>% 
+  summary()
