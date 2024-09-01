@@ -54,7 +54,7 @@ tail(merged_data)
 ## filtering_date:
   
 filtered_data <- merged_data %>%   
-  filter(month >= "1998-01-01" & month < "1999-09-01") 
+  filter(month >= "1971-01-01" & month < "2024-09-01") 
 
 head(filtered_data, 10)
 

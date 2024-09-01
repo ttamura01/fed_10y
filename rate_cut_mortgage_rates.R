@@ -85,12 +85,12 @@ long_data <- data %>%
   ungroup()
 
 main_plot <- ggplot(long_data, aes(x = percent, y = rate_cut, color = change)) +
-  geom_line(color = "#E6E6E6", size = 1.75) +
+  geom_line(color = "gray", size = 1.5) +
   geom_point(size = 2, show.legend = FALSE) +
   geom_segment(aes(x = x, xend = xend, 
                    y = rate_cut, yend = rate_cut),
                arrow = arrow(length = unit(0.4, "cm")), 
-               color = "#727272", size = 0.75) +
+               color = "black", size = 0.75) +
   geom_text(aes(label = glue("{percent}%"), x = bump), size = 4,  show.legend = FALSE) +
   scale_color_manual(name = NULL,
                      breaks = c("precut", "postcut"),
@@ -115,7 +115,7 @@ main_plot <- ggplot(long_data, aes(x = percent, y = rate_cut, color = change)) +
     panel.grid.major.y = element_line(color = "gray", size = 0.1, linetype = "dotted")
   )
 
+main_plot
 ggsave("30_year_mortgage_fed_arrow.png", width = 6, height = 4)  
 
-# Print the plot
-main_plot
+
