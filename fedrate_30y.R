@@ -54,7 +54,7 @@ tail(merged_data)
 ## filtering_date:
   
 filtered_data <- merged_data %>%   
-  filter(month >= "1971-01-01" & month < "2024-09-01") 
+  filter(month >= "1989-01-01" & month < "2024-09-01") 
 
 head(filtered_data, 10)
 
@@ -66,13 +66,15 @@ long_data <- filtered_data %>%
 ggplot(long_data, aes(x = month, y = percentage, color = rates)) +
   geom_line() +
   labs(title = "Historical relation between Fedfund Rate, US 10-year Treasury yield, and 30-year mortgage rate",
+       subtitle = "6 major rate-cuts: 1) Gulf-war, 2) Mid-cycle, 3) Global currency crisis, 4) Dot-com burst & 911, 5) Housing crisis(GFC), 6) Covid-19", 
        x = NULL, y = NULL,
        caption = "Source: FRED(Federal Reserve Economic Data), WSJ"
        ) +
   theme(legend.key = element_blank(),
         legend.title = element_blank(),
         plot.title.position = "plot",
-        plot.title = element_textbox_simple()
+        plot.title = element_textbox_simple(),
+        plot.subtitle = element_textbox_simple()
   ) 
 
 ggsave("correlation_fedfund_treasury_mortgage.png")

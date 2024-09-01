@@ -26,7 +26,7 @@ data <- read_csv("/Users/takayukitamura/Documents/R_Computing/fed_10y/fed_mortga
 main_plot <- data %>% 
   pivot_longer(cols = -rate_cut, names_to = c(".value", "change"),
                names_sep = "_") %>% 
-  mutate(rate_cut = factor(rate_cut, levels = rev(data$rate_cut))) %>% 
+ mutate(rate_cut = factor(rate_cut, levels = rev(data$rate_cut))) %>%
   ggplot(aes(x=percent, y= rate_cut, color = change)) +
   geom_line(color="#E6E6E6", size=1.75) +
   geom_point(size = 2, show.legend = FALSE) +
@@ -89,7 +89,7 @@ main_plot <- ggplot(long_data, aes(x = percent, y = rate_cut, color = change)) +
   geom_point(size = 2, show.legend = FALSE) +
   geom_segment(aes(x = x, xend = xend, 
                    y = rate_cut, yend = rate_cut),
-               arrow = arrow(length = unit(0.4, "cm")), 
+               arrow = arrow(length = unit(0.3, "cm")), 
                color = "black", size = 0.75) +
   geom_text(aes(label = glue("{percent}%"), x = bump), size = 4,  show.legend = FALSE) +
   scale_color_manual(name = NULL,
@@ -101,11 +101,13 @@ main_plot <- ggplot(long_data, aes(x = percent, y = rate_cut, color = change)) +
                      labels = glue("{seq(2, 12, by = 2)}%")) +
   labs(x = NULL,
        y = NULL,
-       title = "30-year mortgage rate changes pre- & post-Fed's Rate Cut Decisions since 1990",
+       title = "30-year mortgage rate changes post-Fed's Rate Cut Decisions since 1990",
+       subtitle = "Average impact 0.9% relatively mild, since rate cuts were priced in the markets in advance", 
        caption = "Source: FRED (Federal Reserve Economic Data)") +
   theme(
     plot.title.position = "plot",
     plot.title = element_textbox_simple(),
+    plot.subtitle = element_textbox_simple(),
     plot.caption = element_markdown(hjust = 0, color = "darkgray"),
     plot.caption.position = "plot",
     panel.background = element_blank(),
