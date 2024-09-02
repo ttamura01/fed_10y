@@ -2,6 +2,7 @@
 library(tidyverse)
 library(lubridate)
 library(ggtext)
+library(plotly)
 
 fed_rate <- read_csv("https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&width=1320&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=FEDFUNDS&scale=left&cosd=1954-07-01&coed=2024-07-01&line_color=%234572a7&link_values=false&line_style=solid&mark_type=none&mw=3&lw=2&ost=-99999&oet=99999&mma=0&fml=a&fq=Monthly&fam=avg&fgst=lin&fgsnd=2020-02-01&line_index=1&transformation=lin&vintage_date=2024-08-30&revision_date=2024-08-30&nd=1954-07-01") %>% 
   rename_all(tolower)
@@ -54,7 +55,7 @@ tail(merged_data)
 ## filtering_date:
   
 filtered_data <- merged_data %>%   
-  filter(month >= "1989-01-01" & month < "2024-09-01") 
+  filter(month >= "1990-01-01" & month < "2024-09-01") 
 
 head(filtered_data, 10)
 
@@ -63,13 +64,15 @@ tail(filtered_data, 10)
 long_data <- filtered_data %>% 
   pivot_longer(cols = -month, names_to = "rates", values_to = "percentage")
 
-ggplot(long_data, aes(x = month, y = percentage, color = rates)) +
+a <- ggplot(long_data, aes(x = month, y = percentage, color = rates)) +
   geom_line() +
   labs(title = "Historical relation between Fedfund Rate, US 10-year Treasury yield, and 30-year mortgage rate",
        subtitle = "6 major rate-cuts: 1) Gulf-war, 2) Mid-cycle, 3) Global currency crisis, 4) Dot-com burst & 911, 5) Housing crisis(GFC), 6) Covid-19", 
        x = NULL, y = NULL,
        caption = "Source: FRED(Federal Reserve Economic Data), WSJ"
        ) +
+  scale_color_manual(values = c("fedfunds" = "#0072B2", "mortgage30us" = "#E69F00", "tn_10y" = "#000000"),
+                                labels = c("fedfunds" = "Federal Fund Rate", "mortgage30us" = "30_year mortgage rate", "tn_10y" = "10-year Treasury Note rate")) +
   theme(legend.key = element_blank(),
         legend.title = element_blank(),
         plot.title.position = "plot",
@@ -77,7 +80,51 @@ ggplot(long_data, aes(x = month, y = percentage, color = rates)) +
         plot.subtitle = element_textbox_simple()
   ) 
 
+a + 
+  geom_vline(xintercept = as.numeric(as.Date("1990-07-01")), linetype = "dashed", color = "black") +
+  geom_vline(xintercept = as.numeric(as.Date("1995-07-01")), linetype = "dashed", color = "black") +
+  geom_vline(xintercept = as.numeric(as.Date("1998-09-01")), linetype = "dashed", color = "black") +
+  geom_vline(xintercept = as.numeric(as.Date("2001-01-01")), linetype = "dashed", color = "black") +
+  geom_vline(xintercept = as.numeric(as.Date("2007-09-01")), linetype = "dashed", color = "black") +
+  geom_vline(xintercept = as.numeric(as.Date("2019-08-01")), linetype = "dashed", color = "black") +
+  geom_text(aes(x = as.Date("1990-07-01"), y = 10.5 + 0.5, 
+                label = "1) Gulf-war"), color = "black", angle = 0, vjust = -0.5) +
+  geom_text(aes(x = as.Date("1995-07-01"), y = 10 + 0.5, 
+                label = "2) Mid-cycle-adjustment"), color = "black", angle = 0, vjust = -0.5) +
+  geom_text(aes(x = as.Date("1998-09-01"), y = 9.5 + 0.5, 
+                label = "3) Global-currency crisis"), color = "black", angle = 0, vjust = -0.5) +
+  geom_text(aes(x = as.Date("2001-01-01"), y = 9.0 + 0.5, 
+                label = "4) Doc-com Burst"), color = "black", angle = 0, vjust = -0.5) +
+  geom_text(aes(x = as.Date("2007-07-01"), y = 8.5 + 0.5, 
+                label = "5) Housing crisis(GFC)"), color = "black", angle = 0, vjust = -0.5) +
+  geom_text(aes(x = as.Date("2019-08-01"), y = 8.0 + 0.5, 
+                label = "6) Covid-19"), color = "black", angle = 0, vjust = -0.5)
+
+
+b <- a + 
+  geom_vline(xintercept = as.numeric(as.Date("1990-07-01")), linetype = "dashed", color = "black") +
+  geom_vline(xintercept = as.numeric(as.Date("1995-07-01")), linetype = "dashed", color = "black") +
+  geom_vline(xintercept = as.numeric(as.Date("1998-09-01")), linetype = "dashed", color = "black") +
+  geom_vline(xintercept = as.numeric(as.Date("2001-01-01")), linetype = "dashed", color = "black") +
+  geom_vline(xintercept = as.numeric(as.Date("2007-09-01")), linetype = "dashed", color = "black") +
+  geom_vline(xintercept = as.numeric(as.Date("2019-08-01")), linetype = "dashed", color = "black") +
+  annotate("text", x = as.Date("1990-07-01"), y = 10.5+ 0.5, 
+                label = "1) Gulf-war", color = "black", angle = 0, vjust = -0.5) +
+  annotate("text", x = as.Date("1995-07-01"), y = 10 + 0.5, 
+                label = "2) Mid-cycle-adjustment", color = "black", angle = 0, vjust = -0.5) +
+  annotate("text", x = as.Date("1998-09-01"), y = 9.5 + 0.5, 
+                label = "3) Global-currency crisis", color = "black", angle = 0, vjust = -0.5) +
+  annotate("text", x = as.Date("2001-01-01"), y = 9.0 + 0.5, 
+                label = "4) Doc-com Burst", color = "black", angle = 0, vjust = -0.5) +
+  annotate("text", x = as.Date("2007-07-01"), y = 8.5 + 0.5, 
+                label = "5) Housing crisis(GFC)", color = "black", angle = 0, vjust = -0.5) +
+  annotate("text", x = as.Date("2019-08-01"), y = 8.0 + 0.5, 
+                label = "6) Covid-19", color = "black", angle = 0, vjust = -0.5)
+
+  
 ggsave("correlation_fedfund_treasury_mortgage.png")
+
+ggplotly(b)
 
 max(filtered_data$mortgage30us)
 filtered_data %>% 
@@ -156,3 +203,5 @@ treasury_note %>%
   group_by(month = floor_date(date, "month")) %>% 
   filter(month == "2023-10-01") %>% 
   summary()
+
+
