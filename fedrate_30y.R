@@ -4,12 +4,28 @@ library(lubridate)
 library(ggtext)
 library(plotly)
 
-fed_rate <- read_csv("https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&width=1320&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=FEDFUNDS&scale=left&cosd=1954-07-01&coed=2024-07-01&line_color=%234572a7&link_values=false&line_style=solid&mark_type=none&mw=3&lw=2&ost=-99999&oet=99999&mma=0&fml=a&fq=Monthly&fam=avg&fgst=lin&fgsnd=2020-02-01&line_index=1&transformation=lin&vintage_date=2024-08-30&revision_date=2024-08-30&nd=1954-07-01") %>% 
+fed_rate <- read_csv("https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&width=1320&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=FEDFUNDS&scale=left&cosd=1954-07-01&coed=2024-08-01&line_color=%234572a7&link_values=false&line_style=solid&mark_type=none&mw=3&lw=2&ost=-99999&oet=99999&mma=0&fml=a&fq=Monthly&fam=avg&fgst=lin&fgsnd=2020-02-01&line_index=1&transformation=lin&vintage_date=2024-09-12&revision_date=2024-09-12&nd=1954-07-01") %>% 
   rename_all(tolower)
 
-treasury_note <- read_csv("https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&width=1320&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=DGS10&scale=left&cosd=1962-01-02&coed=2024-08-28&line_color=%234572a7&link_values=false&line_style=solid&mark_type=none&mw=3&lw=2&ost=-99999&oet=99999&mma=0&fml=a&fq=Daily&fam=avg&fgst=lin&fgsnd=2020-02-01&line_index=1&transformation=lin&vintage_date=2024-08-30&revision_date=2024-08-30&nd=1962-01-02") %>% 
+# updates <- tribble(~date, ~fedfunds,
+#                    "2024-08-01", 5.33,
+#                    "2024-09-01", 5.33,
+#                    "2024-09-26", 4.83)
+# 
+# fed_rate <- rbind(fed_rate, updates)
+
+tail(fed_rate)
+
+treasury_note <- read_csv("https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&width=1320&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=DGS10&scale=left&cosd=1962-01-02&coed=2024-09-25&line_color=%234572a7&link_values=false&line_style=solid&mark_type=none&mw=3&lw=2&ost=-99999&oet=99999&mma=0&fml=a&fq=Daily&fam=avg&fgst=lin&fgsnd=2020-02-01&line_index=1&transformation=lin&vintage_date=2024-09-27&revision_date=2024-09-27&nd=1962-01-02") %>% 
   rename_all(tolower) %>% 
   rename(tn_10y = dgs10) 
+
+# updates <- tribble(~date, ~tn_10y,
+#                    "2024-09-12", 3.69)
+# 
+# treasury_note <- rbind(treasury_note, updates)
+
+tail(treasury_note)
 
 # treasury_note %>% 
 #   mutate(tn_10y = as.numeric(tn_10y, na.rm = TRUE))
@@ -24,8 +40,15 @@ treasury_note <- treasury_note %>%
   mutate(tn_10y = suppressWarnings(as.numeric(tn_10y)))
 
 
-mortgage <- read_csv("https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&width=1320&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=MORTGAGE30US&scale=left&cosd=1971-04-02&coed=2024-08-29&line_color=%234572a7&link_values=false&line_style=solid&mark_type=none&mw=3&lw=2&ost=-99999&oet=99999&mma=0&fml=a&fq=Weekly%2C%20Ending%20Thursday&fam=avg&fgst=lin&fgsnd=2020-02-01&line_index=1&transformation=lin&vintage_date=2024-08-30&revision_date=2024-08-30&nd=1971-04-02") %>% 
+mortgage <- read_csv("https://fred.stlouisfed.org/graph/fredgraph.csv?bgcolor=%23e1e9f0&chart_type=line&drp=0&fo=open%20sans&graph_bgcolor=%23ffffff&height=450&mode=fred&recession_bars=on&txtcolor=%23444444&ts=12&tts=12&width=1320&nt=0&thu=0&trc=0&show_legend=yes&show_axis_titles=yes&show_tooltip=yes&id=MORTGAGE30US&scale=left&cosd=1971-04-02&coed=2024-09-26&line_color=%234572a7&link_values=false&line_style=solid&mark_type=none&mw=3&lw=2&ost=-99999&oet=99999&mma=0&fml=a&fq=Weekly%2C%20Ending%20Thursday&fam=avg&fgst=lin&fgsnd=2020-02-01&line_index=1&transformation=lin&vintage_date=2024-09-27&revision_date=2024-09-27&nd=1971-04-02") %>% 
   rename_all(tolower)
+
+# updates <- tribble(~date, ~mortgage30us,
+#                    "2024-09-12", 6.30)
+# 
+# mortgage <- rbind(mortgage, updates)
+
+tail(mortgage)
 
 fedfunds_data <- fed_rate %>% 
   mutate(date = ymd(date)) 
@@ -44,8 +67,12 @@ merged_data <- mortgage_data %>%
   inner_join(fedfunds_data, by = c("month" = "date")) %>% 
   inner_join(., treasury_note_data, by = "month")
 
+tail(merged_data)
+
 updates <- tribble(~ month, ~mortgage30us, ~fedfunds, ~tn_10y,
-                   "2024-08-01", 6.35, 5.33, 3.87)
+                   "2024-09-01", 6.35, 5.33, 3.75,
+                   "2024-09-12", 6.20, 5.33, 3.68,
+                   "2024-09-19", 6.09, 4.83, 3.72)
 
 merged_data <- rbind(merged_data, updates)
 
@@ -55,7 +82,7 @@ tail(merged_data)
 ## filtering_date:
   
 filtered_data <- merged_data %>%   
-  filter(month >= "1990-01-01" & month < "2024-09-01") 
+  filter(month >= "1990-01-01" & month < "2024-10-01") 
 
 head(filtered_data, 10)
 
@@ -121,6 +148,7 @@ b <- a +
   annotate("text", x = as.Date("2019-08-01"), y = 8.0 + 0.5, 
                 label = "6) Covid-19", color = "black", angle = 0, vjust = -0.5)
 
+b
   
 ggsave("correlation_fedfund_treasury_mortgage.png")
 
